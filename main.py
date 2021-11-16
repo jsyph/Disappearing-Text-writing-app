@@ -7,14 +7,13 @@ from tkinter import ttk
 
 import docx
 
+from globals import Globals
 from init import init
 
 
 def reset_timer():
-    global counter, last_press
-
-    counter = 10
-    last_press = [datetime.datetime.now()]
+    Globals.counter = 10
+    Globals.last_press = [datetime.datetime.now()]
 
 
 def create_new_doc():
@@ -62,42 +61,38 @@ def save_doc():
 
 
 def record_time(*args):
-    global last_press
-
     time_now = datetime.datetime.now()
-    last_press.append(time_now)
+    Globals.last_press.append(time_now)
 
     reset_timer()
-    timer_label.config(text=counter)
+    timer_label.config(text=Globals.counter)
 
 
 def timer():
-    global counter
-
-    counter -= 1
+    Globals.counter -= 1
     time_now = datetime.datetime.now()
-    last_press.reverse()
-    last_time = last_press[0]
+    Globals.last_press.reverse()
+    last_time = Globals.last_press[0]
     time_dif = (time_now - last_time).seconds
     if time_dif > 10:
         print("TIME OUT!")
         tk_message.showwarning(title="DAMN!", message="Seems like the timer ended.\nWell, too bad....")
         create_new_doc()
 
-    timer_label.config(text=counter)
+    timer_label.config(text=Globals.counter)
     root.after(1000, timer)
 
 
 init()
 root = tk.Tk()
-last_press = [datetime.datetime.now()]
-counter = 10
+Globals.last_press = [datetime.datetime.now()]
+Globals.counter = 10
 
 create_new_doc_button = ttk.Button(root, text="Create New Document", command=create_new_doc,
                                    width=30)
 create_new_doc_button.grid(row=0, column=0, padx=(0, 5))
 
-timer_label = ttk.Label(root, text=counter, width=30)
+timer_label = ttk.Label(root, text=Globals.counter, width=30)
 timer_label.configure(anchor="center")
 timer_label.grid(row=0, column=1, padx=(0, 5))
 
